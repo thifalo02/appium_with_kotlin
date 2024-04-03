@@ -13,10 +13,11 @@ repositories {
 dependencies {
     implementation("org.projectlombok:lombok:1.18.22")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
-    testImplementation("io.appium:java-client:7.3.0")
+    testImplementation("io.appium:java-client:9.2.2")
     testImplementation("com.browserstack:browserstack-local-java:1.0.6")
     testImplementation("com.google.guava:guava:31.1-jre")
     testImplementation("io.rest-assured:rest-assured:5.3.0")
+    testImplementation("com.google.code.gson:gson:2.10.1")
 }
 
 tasks.test {
