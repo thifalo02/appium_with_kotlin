@@ -9,8 +9,8 @@ import java.util.logging.Logger
 class BrowserStack {
     private val log: Logger = Logger.getLogger(Test::class.java.name)
     private val utils = Utils()
-    private val bsUser: String = System.getProperty("bsUser")
-    private val bsPass: String = System.getProperty("bsPass")
+    private val bsUser: String = Properties.props.getProperty("bsUser")
+    private val bsPass: String = Properties.props.getProperty("bsPass")
 
     fun startBrowserStackServer() {
         log.info("Starting Browserstack Local Server")

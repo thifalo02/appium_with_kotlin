@@ -1,10 +1,10 @@
 package br.thiago.core
 
 import io.appium.java_client.AppiumDriver
-import io.appium.java_client.MobileElement
 import io.appium.java_client.android.AndroidDriver
+import io.appium.java_client.android.options.UiAutomator2Options
 import io.appium.java_client.ios.IOSDriver
-import io.appium.java_client.remote.MobileCapabilityType
+import io.appium.java_client.ios.options.XCUITestOptions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.openqa.selenium.remote.DesiredCapabilities
@@ -13,7 +13,7 @@ import java.net.URL
 open class StartAppium {
 
     companion object {
-        var driver: AppiumDriver<MobileElement>? = null
+        var driver: AppiumDriver? = null
     }
 
     private val browserStack: BrowserStack = BrowserStack()
@@ -22,15 +22,15 @@ open class StartAppium {
 
     @BeforeEach
     fun startDriver() {
-        val bsUser = System.getProperty("bsUser")
-        val bsPass = System.getProperty("bsPass")
+        val bsUser = Properties.props.getProperty("bsUser")
+        val bsPass = Properties.props.getProperty("bsPass")
         val path = System.getProperty("user.dir")
         val libPath = "/mobile/src/test/resources/app"
-        val platform = System.getProperty("platform") ?: throw Exception("O Sistema Operacional não foi informado!")
-        val build = System.getProperty("buildVersion")
+        val platform = Properties.props.getProperty("platform") ?: throw Exception("O Sistema Operacional não foi informado!")
+        val build = Properties.props.getProperty("buildVersion")
         val url = URL("http://127.0.0.1:4723/wd/hub")
-        val platformVersion = System.getProperty("platformVersion")
-        val deviceName = System.getProperty("deviceName")
+        val platformVersion = Properties.props.getProperty("platformVersion")
+        val deviceName = Properties.props.getProperty("deviceName")
         val timeout = 90L
 
         when {
@@ -38,15 +38,14 @@ open class StartAppium {
                 appiumServer.startAppiumServer()
                 utils.startDeviceLocal(deviceName)
 
-                DesiredCapabilities().apply {
-                    setCapability(MobileCapabilityType.DEVICE_NAME, deviceName)
-                    setCapability(MobileCapabilityType.PLATFORM_NAME, platform)
-                    setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2")
-//                    setCapability(MobileCapabilityType.APP, "$path$libPath")
-                    setCapability("appPackage", "com.android.calculator2")
-                    setCapability("appActivity", "com.android.calculator2.Calculator")
-                    setCapability("autoGrantPermissions", true)
-                    setCapability("newCommandTimeout", 180)
+                UiAutomator2Options().apply {
+                    setDeviceName(deviceName)
+                    setPlatformVersion(platformVersion)
+                    setAutomationName("UiAutomator2")
+//                    setApp("$path$libPath")
+                    setAppPackage("com.android.calculator2")
+                    setAppActivity("com.android.calculator2.Calculator")
+                    setAutoGrantPermissions(true)
                 }.also {
                     driver = AndroidDriver(url, it)
                 }
@@ -83,12 +82,12 @@ open class StartAppium {
                 appiumServer.startAppiumServer()
                 utils.startDeviceLocal(deviceName)
 
-                DesiredCapabilities().apply {
-                    setCapability(MobileCapabilityType.DEVICE_NAME, deviceName)
-                    setCapability(MobileCapabilityType.PLATFORM_NAME, platform)
-                    setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion)
-                    setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest")
-                    setCapability(MobileCapabilityType.APP, utils.getIosAppLocalPath())
+                XCUITestOptions().apply {
+                    setDeviceName(deviceName)
+                    setPlatformName(platform)
+                    setPlatformVersion(platformVersion)
+                    setAutomationName("XCUITest")
+                    setApp("$path$libPath")
                     setCapability("autoGrantPermissions", true)
                     setCapability("newCommandTimeout", 180)
                 }.also {
@@ -125,12 +124,12 @@ open class StartAppium {
 
     @AfterEach
     fun tearDown() {
-        if (System.getProperty("platform").contains("_bs")) {
+        if (Properties.props.getProperty("platform").contains("_bs")) {
             browserStack.stopBrowserStackServer()
         } else {
             driver?.quit()
             appiumServer.stopAppiumServer()
-            utils.stopDeviceLocal(System.getProperty("deviceName"))
+            utils.stopDeviceLocal(Properties.props.getProperty("deviceName"))
         }
     }
 }
