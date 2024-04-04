@@ -47,7 +47,7 @@ class Utils {
 
     fun startDeviceLocal(deviceName: String) {
         log.info("Starting device local - $deviceName")
-        if (System.getProperty("platform").equals("android", true)) {
+        if (Properties.props.getProperty("platform").equals("android", true)) {
             executeCommandLine("emulator -avd $deviceName")
             Thread.sleep(10000)
         } else {

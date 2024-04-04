@@ -39,12 +39,12 @@ open class StartAppium {
                 utils.startDeviceLocal(deviceName)
 
                 UiAutomator2Options().apply {
-                    setDeviceName(deviceName)
+//                    setDeviceName(deviceName)
                     setPlatformVersion(platformVersion)
                     setAutomationName("UiAutomator2")
 //                    setApp("$path$libPath")
-                    setAppPackage("com.android.calculator2")
-                    setAppActivity("com.android.calculator2.Calculator")
+//                    setAppPackage("com.android.calculator2d")
+//                    setAppActivity("com.android.calculator2.Calculator")
                     setAutoGrantPermissions(true)
                 }.also {
                     driver = AndroidDriver(url, it)
